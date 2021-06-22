@@ -6,14 +6,14 @@
 /*   By: abicer <abicer@student.s19.be>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 22:00:34 by abicer            #+#    #+#             */
-/*   Updated: 2020/02/26 13:45:47 by abicer           ###   ########.fr       */
+/*   Updated: 2021/06/22 16:35:52 by abicer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <limits.h>
 
-char		*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*str;
 	int		size;
@@ -35,7 +35,7 @@ char		*ft_strjoin(char const *s1, char const *s2)
 	return (NULL);
 }
 
-char		*ft_strchr(const char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
 	size_t	i;
 
@@ -43,12 +43,12 @@ char		*ft_strchr(const char *s, int c)
 	if (s == NULL)
 		return (NULL);
 	if ((char)c == '\0')
-		return ((char*)s + ft_strlen(s));
+		return ((char *)s + ft_strlen(s));
 	while (s[i] && s[i] != c)
 		++i;
 	if (!s[i])
 		return (NULL);
-	return ((char*)s + i);
+	return ((char *)s + i);
 }
 
 static	int	get_line(char **str, char **line)
@@ -78,10 +78,10 @@ static	int	get_line(char **str, char **line)
 	}
 }
 
-int			get_next_line(int fd, char **line)
+int	get_next_line(int fd, char **line)
 {
 	char		buf[BUFFER_SIZE + 1];
-	static char	*str[OPEN_MAX] = { NULL };
+	static char	*str[OPEN_MAX] = {NULL};
 	char		*temp;
 	size_t		ret;
 
@@ -91,13 +91,14 @@ int			get_next_line(int fd, char **line)
 		str[fd] = ft_strdup("");
 	if (!str[fd])
 		return (-1);
-	while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
+	while (1)
 	{
+		ret = read(fd, buf, BUFFER_SIZE);
 		buf[ret] = '\0';
 		temp = ft_strjoin(str[fd], buf);
 		free(str[fd]);
 		str[fd] = temp;
-		if (ft_strchr(str[fd], '\n'))
+		if (ft_strchr(str[fd], '\n') || ret <= 0)
 			break ;
 	}
 	return (get_line(&str[fd], line));
